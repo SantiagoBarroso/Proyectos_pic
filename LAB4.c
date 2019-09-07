@@ -29,17 +29,20 @@ _CONFIG2(IESO_OFF // deshabilito 2 velocidades de start up
 #define BB LATDbits.LATD7
 #define BC LATAbits.LATA7
 #define BD LATDbits.LATD13
+//------------------------------------------------------------------------------
 void Configuracion_inicial();
 void Configuracion_ADC();
 void Leer_temperatura_y_pote();
 void Mostrar_temperatura_y_pote();
+void  Configuracion_entrada_salida();
+//------------------------------------------------------------------------------
 unsigned int POTE;
 float TEMP;
 unsigned char POTENCIOMETRO [6] = {'\0'};
 unsigned char TEMPERATURA [6] = {'\0'};
-
+//------------------------------------------------------------------------------
 int main(void) {
-    Configuracion_puertos();
+    Configuracion_entrada_salida();
     Configuracion_ADC();
     InitLCD();
     while (1) {
@@ -47,7 +50,7 @@ int main(void) {
         Mostrar_temperatura_y_pote();
     }
 }
-
+//------------------------------------------------------------------------------
 void Configuracion_puertos() {
     TRISA = 0X0000;
     TRISAbits.TRISA7 = 1;
