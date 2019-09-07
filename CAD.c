@@ -1,14 +1,14 @@
 #define FOSC 32000000        // Frecuencia del clock del micro
 #define FCY FOSC/2          // Frecuencia de instrucciones usada por  "__delay_ms()"
-#include <p24FJ128GA010.h>   // Header específico deL micro
+#include <p24FJ128GA010.h>   // Header especÃ­fico deL micro
 #include <libpic30.h>       // se necesita para "__delay_ms()"
 #include "LCD.h"
 #include <stdio.h>
 //------------------------------------------------------------------------------
 
 _CONFIG1(JTAGEN_OFF // deshabilito interface JTAG
-        & GCP_OFF // deshabilito proteción de código general
-        & GWRP_OFF // deshabilito protección escritura flash
+        & GCP_OFF // deshabilito proteciÃ³n de cÃ³digo general
+        & GWRP_OFF // deshabilito protecciÃ³n escritura flash
         & ICS_PGx2 // ICSP interface (2=default)
         & FWDTEN_OFF) // deshabilito watchdog timer
 _CONFIG2(IESO_OFF // deshabilito 2 velocidades de start up
@@ -66,15 +66,6 @@ int main(void) {
         SetLCDC(7), putLCD(TEMPERATURA[1]);
         SetLCDC(8), putLCD(TEMPERATURA[2]);
         SetLCDC(9), putLCD(TEMPERATURA[3]);
-        //0-1023
-        //0-3.3
-        //3.3 -> 1023
-        //1.75-> 542
-        //----------
-        //542 -> 125
-        //x ->  (x*125)/542
-        //1.75 -> 542
-        //0.5 -> 154
     }
 }
 
