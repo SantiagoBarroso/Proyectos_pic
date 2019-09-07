@@ -1,15 +1,14 @@
 #define FOSC 32000000        // Frecuencia del clock del micro
 #define FCY FOSC/2          // Frecuencia de instrucciones usada por  "__delay_ms()"
-#include <p24FJ128GA010.h>   // Header específico deL micro
+#include <p24FJ128GA010.h>   // Header especÃ­fico deL micro
 #include <libpic30.h>       // se necesita para "__delay_ms()"
 #include "LCD.h"
 #include "RTCC.h"
 #include <stdio.h>
 //------------------------------------------------------------------------------
-
 _CONFIG1(JTAGEN_OFF // deshabilito interface JTAG
-        & GCP_OFF // deshabilito proteción de código general
-        & GWRP_OFF // deshabilito protección escritura flash
+        & GCP_OFF // deshabilito proteciÃ³n de cÃ³digo general
+        & GWRP_OFF // deshabilito protecciÃ³n escritura flash
         & ICS_PGx2 // ICSP interface (2=default)
         & FWDTEN_OFF) // deshabilito watchdog timer
 _CONFIG2(IESO_OFF // deshabilito 2 velocidades de start up
@@ -30,9 +29,9 @@ _CONFIG2(IESO_OFF // deshabilito 2 velocidades de start up
 #define BB LATDbits.LATD7
 #define BC LATAbits.LATA7
 #define BD LATTDbits.LATD13
-void deco_hora(unsigned char dato);
+//------------------------------------------------------------------------------
 void leer_hora();
-
+//------------------------------------------------------------------------------
 int main(void) {
     AD1PCFG = 0xFFFF;
     initRTCC();
@@ -42,11 +41,9 @@ int main(void) {
         leer_hora();
     }
 }
-
+//------------------------------------------------------------------------------
 void leer_hora() {
-    unsigned char segundos, minutos, hora, dia, mes, anioa, dia_semana;
     unsigned int valor;
-    //------------------
     _RTCPTR = 3; // comienza la secuencia
     valor = RTCVAL;
     SetLCDG(0), putLCD(((valor & 0x00F0) >> 4) + 0x30);
@@ -69,3 +66,4 @@ void leer_hora() {
     SetLCDC(6), putLCD(((valor & 0x00F0) >> 4) + 0x30);
     SetLCDC(7), putLCD(((valor & 0x000F)) + 0x30);
 }
+//------------------------------------------------------------------------------
