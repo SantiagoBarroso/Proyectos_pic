@@ -30,59 +30,72 @@ _CONFIG2(IESO_OFF // deshabilito 2 velocidades de start up
 #define BC LATAbits.LATA7
 #define BD LATDbits.LATD13
 void Configuracion_inicial();
+void Configuracion_ADC();
+void Leer_temperatura_y_pote();
+void Mostrar_temperatura_y_pote();
 unsigned int POTE;
 float TEMP;
 unsigned char POTENCIOMETRO [6] = {'\0'};
 unsigned char TEMPERATURA [6] = {'\0'};
 
 int main(void) {
-    Configuracion_inicial();
+    Configuracion_puertos();
+    Configuracion_ADC();
     InitLCD();
     while (1) {
-        /************************POTENCIOMETRO**********************************/
-        AD1CHS = 5;
-        AD1CON1bits.SAMP = 1;
-        __delay_ms(100);
-        AD1CON1bits.SAMP = 0; // start Converting
-        while (!AD1CON1bits.DONE); // conversion done?
-        POTE = ADC1BUF0; // yes then get ADC value
-        sprintf(POTENCIOMETRO, "%4i", POTE);
-        SetLCDG(0), putsLCD("POTE: ");
-        SetLCDG(6), putLCD(POTENCIOMETRO[0]);
-        SetLCDG(7), putLCD(POTENCIOMETRO[1]);
-        SetLCDG(8), putLCD(POTENCIOMETRO[2]);
-        SetLCDG(9), putLCD(POTENCIOMETRO[3]);
-        /**************************TEMPERATURA**********************************/
-        AD1CHS = 4;
-        AD1CON1bits.SAMP = 1;
-        __delay_ms(100);
-        AD1CON1bits.SAMP = 0; // start Converting
-        while (!AD1CON1bits.DONE); // conversion done?
-        TEMP = ADC1BUF0; // yes then get ADC value
-        TEMP = (TEMP *0.3248)-55 ;
-        sprintf(TEMPERATURA, "%f2.1", TEMP);
-        SetLCDC(0), putsLCD("TEMP: ");
-        SetLCDC(6), putLCD(TEMPERATURA[0]);
-        SetLCDC(7), putLCD(TEMPERATURA[1]);
-        SetLCDC(8), putLCD(TEMPERATURA[2]);
-        SetLCDC(9), putLCD(TEMPERATURA[3]);
+        Leer_temperatura_y_pote();
+        Mostrar_temperatura_y_pote();
     }
 }
 
-void Configuracion_inicial() {
+void Configuracion_puertos() {
+    TRISA = 0X0000;
+    TRISAbits.TRISA7 = 1;
+    TRISDbits.TRISD6 = 1;
+    TRISDbits.TRISD7 = 1;
+    TRISDbits.TRISD13 = 1;
+}
 
-    ///////////////////////////////////////////////////////////////////////////
+void Configuracion_ADC() {
     AD1PCFG = 0b111111111001111;
     AD1CON1 = 0x0000; // and starts converting
     AD1CSSL = 0;
     AD1CON3 = 0x0002; // Manual Sample, Tad = 2 Tcy
     AD1CON2 = 0;
     AD1CON1bits.ADON = 1; // turn ADC ON
-    ///////////////////////////////////////////////////////////////////////////
-    TRISA = 0X0000;
-    TRISAbits.TRISA7 = 1;
-    TRISDbits.TRISD6 = 1;
-    TRISDbits.TRISD7 = 1;
-    TRISDbits.TRISD13 = 1;
+}
 
+void Leer_temperatura_y_pote() {
+    /************************POTENCIOMETRO**********************************/
+    AD1CHS = 5;
+    AD1CON1bits.SAMP = 1;
+    __delay_ms(100);
+    AD1CON1bits.SAMP = 0; // start Converting
+    while (!AD1CON1bits.DONE); // conversion done?
+    POTE = ADC1BUF0; // yes then get ADC value
+    sprintf(POTENCIOMETRO, "%4i", POTE);
+    /**************************TEMPERATURA**********************************/
+    AD1CHS = 4;
+    AD1CON1bits.SAMP = 1;
+    __delay_ms(100);
+    AD1CON1bits.SAMP = 0; // start Converting
+    while (!AD1CON1bits.DONE); // conversion done?
+    TEMP = ADC1BUF0; // yes then get ADC value
+    TEMP = (TEMP * 0.3248) - 55;
+    sprintf(TEMPERATURA, "%f2.1", TEMP);
+}
+
+void Mostrar_temperatura_y_pote() {
+    /************************POTENCIOMETRO**********************************/
+    SetLCDG(0), putsLCD("POTE: ");
+    SetLCDG(6), putLCD(POTENCIOMETRO[0]);
+    SetLCDG(7), putLCD(POTENCIOMETRO[1]);
+    SetLCDG(8), putLCD(POTENCIOMETRO[2]);
+    SetLCDG(9), putLCD(POTENCIOMETRO[3]);
+    /**************************TEMPERATURA**********************************/
+    SetLCDC(0), putsLCD("TEMP: ");
+    SetLCDC(6), putLCD(TEMPERATURA[0]);
+    SetLCDC(7), putLCD(TEMPERATURA[1]);
+    SetLCDC(8), putLCD(TEMPERATURA[2]);
+    SetLCDC(9), putLCD(TEMPERATURA[3]);
 }
